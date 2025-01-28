@@ -51,7 +51,7 @@ export const signinUser = async (req: Request, res: Response) => {
         const user=await prismaClient.user.findFirst({where:{email:req.body.username}});
         console.log(user);
         if(user===null){
-            res.json({message:"User is not present"});
+            res.status(400).json({message:"User is not present"});
             return;
         }
         const isMatched=await hash(req.body.password,user.password);

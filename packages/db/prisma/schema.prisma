@@ -41,3 +41,10 @@ model Chat {
   room Room @relation(fields: [roomId],references: [id]) 
   user User @relation(fields:[userId],references: [id])
 }
+
+
+// model Shape{
+//   id String @id @default(uuid())
+//   type String
+//   data String
+// }

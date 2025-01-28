@@ -30,3 +30,18 @@ export const createRoom = async (req: Request, res: Response) => {
         return;
     }
 }
+
+export const getMessagesByRoomId=async (req:Request,res:Response)=>{
+    try{
+        const roomId=Number(req.params.roomId);
+        const messages=await prismaClient.chat.findMany({where:{
+            roomId:roomId
+        }, orderBy:{ id:'desc'}});
+
+        res.status(200).json({message:"Retrieve All Messages Successfully", messages:messages});
+    }
+    catch (err) {
+        res.json({ message: "Internal Server Error", error: err });
+        return;
+    }
+}

@@ -12,7 +12,8 @@ interface User{
 const users:User[]=[];
 const checkJwt=(token:string)=>{
     try{
-        const decoded=jwt.verify(token,JWT_SECRET_KEY)
+        const decoded=jwt.decode(token)
+        console.log(decoded);
         if(typeof decoded==="string"){
             return null;
         }
@@ -32,10 +33,11 @@ wss.on('connection',(socket,request)=>{
     if(!url){
         return ;
     }
-    const jwt_secret_key=JWT_SECRET_KEY;
     const queryParams=new URLSearchParams(url.split("?")[1]);
     const token=queryParams.get('token') || "";
+
     const decoded=checkJwt(token);
+    console.log(decoded)
     if(!decoded || !(decoded as JwtPayload).userId){
         socket.send("Sorry Not Authenticated !");
         socket.close();
@@ -49,6 +51,7 @@ wss.on('connection',(socket,request)=>{
         if(parsedData.type==='join' ){
             const user=users.find(x=>x.socket===socket);
             user?.rooms.push(parsedData.roomId);
+            socket.send('pong');
         }
 
         if(parsedData.type==='leave'){
@@ -60,9 +63,11 @@ wss.on('connection',(socket,request)=>{
         }
         if(parsedData.type==='chat'){
             const roomId=parsedData.roomId;
-            const message=parsedData.message;
+            const message=parsedData.message.toString();
+            console.log(message);
             users.forEach(user=>{
-                if(user.rooms.includes(roomId) && user.userId!==userId){
+                //  && user.userId!==userId
+                if(user.rooms.includes(roomId)){
                     user.socket.send(JSON.stringify({
                         type:'chat',
                         message:message,
@@ -71,6 +76,6 @@ wss.on('connection',(socket,request)=>{
                 }
             })
         }
-        socket.send('pong');
+        
     });
 });

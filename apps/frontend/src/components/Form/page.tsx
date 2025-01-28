@@ -24,11 +24,8 @@ export function AuthForm({ type }: AuthFormProps) {
     console.log(data);
     if (type == "signup") {
       axios.post(`${process.env.NEXT_PUBLIC_API_URL}user/signup`, data).then((data) => {
-        if (data.data?.data?.jwtToken !== undefined) {
-          localStorage.setItem("token", data.data?.data?.jwtToken);
-          if (typeof window !== undefined) {
-            window.location.href = "/dashboard";
-          }
+        if (data.data?.token !== undefined) {
+          localStorage.setItem("excaliToken", data.data?.token);
         }
       }).catch((err) => {
         console.log(err);
@@ -37,10 +34,9 @@ export function AuthForm({ type }: AuthFormProps) {
     }
     else {
       axios.post(`${process.env.NEXT_PUBLIC_API_URL}user/signin`, data).then((data) => {
-        console.log(data, data?.data?.data?.jwtToken);
-        if (data.data?.data?.jwtToken !== undefined) {
-          localStorage.setItem("token", data.data?.data?.jwtToken);
-          if (typeof window !== undefined) { window.location.href = "/dashboard"; }
+        console.log(data, data?.data?.token);
+        if (data.data?.token !== undefined) {
+          localStorage.setItem("excaliToken", data.data?.token);
         }
       }).catch((err) => {
         console.log(err);
@@ -52,7 +48,7 @@ export function AuthForm({ type }: AuthFormProps) {
 
   return (
     <div className="grid gap-6">
-      {error && <h1 className="text-4xl text-red-500"> {error}</h1>}
+      {error && <h1 className="text-sm sm:text-lg font-normal text-red-500 text-center"> {error}</h1>}
       <form onSubmit={onSubmit}>
         <div className="grid gap-4">
           {type === "signup" && (
@@ -75,7 +71,7 @@ export function AuthForm({ type }: AuthFormProps) {
             <label htmlFor="email" >Email</label>
             <Input
               id="email"
-              name='email'
+              name='username'
               placeholder="name@example.com"
               type="email"
               autoCapitalize="none"
