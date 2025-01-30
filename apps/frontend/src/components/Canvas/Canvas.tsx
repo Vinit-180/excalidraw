@@ -1,4 +1,5 @@
 import drawShapes from "@/tools/draw";
+import { Draw } from "@/tools/draw/index";
 import { useEffect, useRef, useState } from "react"
 type CanvasProps={
     elementType:string;
@@ -7,11 +8,7 @@ type CanvasProps={
 }
 const Canvas=({elementType,roomId,socket}:CanvasProps)=>{
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const contextRef = useRef<CanvasRenderingContext2D | null>(null);
-    const [zoom, setZoom] = useState(100);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [isDragging, setIsDragging] = useState(false);
-    const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
+    const [draw,setDraw]=useState<Draw>();
     const [canvasWindows,setCanvasWindows]=useState({width:window.innerWidth,height:window.innerHeight});
   
     useEffect(()=>{
@@ -28,18 +25,19 @@ const Canvas=({elementType,roomId,socket}:CanvasProps)=>{
     useEffect(() => {
         const canvas = canvasRef.current;
         if (canvas) {
-
-          const context = canvas.getContext("2d");
-          if (context) {
-            contextRef.current = context;
-          }
-            console.log("Drawing with elementType:", elementType);
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            drawShapes(canvas, elementType,socket,roomId); 
+            const drawObject=new Draw(canvas,socket,roomId);
+            setDraw(drawObject);
+            
+            // drawShapes(canvas, elementType,socket,r  omId); 
         }  
-    }, [elementType]);
+    }, [canvasRef]);
 
+    useEffect(()=>{
+      console.log("Drawing with elementType:", elementType);
+      draw?.setElementType(elementType);
+    },[elementType,draw]);
     
       
 return( <div 

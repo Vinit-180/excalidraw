@@ -1,5 +1,3 @@
-import { start } from "repl";
-
 type Shape = {
     type: "rect";
     x: number;

@@ -9,7 +9,7 @@ import Canvas from './Canvas';
 const RootCanvas = ({roomId}:{roomId:string}) => {
     console.log(roomId);
     
-    const elementTypeRef = useRef("rect");
+
     const [elementType, setElementType] = useState("hand");
     const iconsData = [
         { icon: HandIcon, text: "hand" },
